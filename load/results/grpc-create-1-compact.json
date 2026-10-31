@@ -1,27 +1,27 @@
 {
   "protocol": "grpc",
   "operation": "create",
-  "rate": 2,
-  "duration": "5s",
+  "rate": 20,
+  "duration": "60s",
   "content_bytes": 1024,
   "latency_ms": {
-    "p(95)": 42.099999999999994,
-    "p(99)": 42.82,
-    "max": 43,
-    "avg": 37,
-    "med": 39.5
+    "avg": 22.101666666666667,
+    "med": 10,
+    "p(95)": 43,
+    "p(99)": 49.02999999999997,
+    "max": 156
   },
   "failures": {
+    "rate": 0,
     "passes": 0,
-    "fails": 10,
-    "rate": 0
+    "fails": 1200
   },
   "successful": {
-    "count": 10,
-    "rate": 1.9996194056398187
+    "count": 1200,
+    "rate": 20.000928305752247
   },
   "dropped": {
-    "rate": 0,
-    "count": 0
+    "count": 0,
+    "rate": 0
   }
 }

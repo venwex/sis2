@@ -1,0 +1,27 @@
+{
+  "protocol": "grpc",
+  "operation": "get",
+  "rate": 20,
+  "duration": "60s",
+  "content_bytes": 1024,
+  "latency_ms": {
+    "avg": 5.502081598667777,
+    "med": 4,
+    "p(95)": 7,
+    "p(99)": 40,
+    "max": 218
+  },
+  "failures": {
+    "rate": 0,
+    "passes": 0,
+    "fails": 1201
+  },
+  "successful": {
+    "count": 1201,
+    "rate": 20.015635622245277
+  },
+  "dropped": {
+    "count": 0,
+    "rate": 0
+  }
+}

@@ -1,24 +1,24 @@
 {
   "protocol": "rest",
   "operation": "create",
-  "rate": 2,
-  "duration": "5s",
+  "rate": 20,
+  "duration": "60s",
   "content_bytes": 1024,
   "latency_ms": {
-    "med": 42,
-    "p(95)": 75,
-    "p(99)": 98.20000000000002,
-    "max": 104,
-    "avg": 36.18181818181818
+    "avg": 21.33805162364696,
+    "med": 8,
+    "p(95)": 44,
+    "p(99)": 47,
+    "max": 243
   },
   "failures": {
+    "rate": 0,
     "passes": 0,
-    "fails": 11,
-    "rate": 0
+    "fails": 1201
   },
   "successful": {
-    "count": 11,
-    "rate": 2.194150246678967
+    "count": 1201,
+    "rate": 20.0041610680422
   },
   "dropped": {
     "count": 0,
