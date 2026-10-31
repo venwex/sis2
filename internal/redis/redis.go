@@ -1,4 +1,4 @@
-package redis
+package cache
 
 import (
 	"context"
@@ -12,14 +12,16 @@ import (
 
 func NewRedisClient(host, port string) (*redis.Client, error) {
 	client := redis.NewClient(&redis.Options{
-		Addr: fmt.Sprintf("%s:%s", host, port),
-		DB:   0,
+		Addr:                  fmt.Sprintf("%s:%s", host, port),
+		DB:                    0,
+		ContextTimeoutEnabled: true,
 	})
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	if err := client.Ping(ctx).Err(); err != nil {
+		_ = client.Close()
 		return nil, err
 	}
 

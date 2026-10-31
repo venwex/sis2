@@ -1,0 +1,34 @@
+syntax = "proto3";
+
+package paste;
+
+option go_package = "pastebin/gen;pb";
+
+import "google/protobuf/timestamp.proto";
+
+service PasteService {
+  rpc CreatePaste(CreatePasteRequest) returns (CreatePasteResponse);
+  rpc GetPaste(GetPasteRequest) returns (GetPasteResponse);
+}
+
+message CreatePasteRequest {
+  string content = 1;
+  string visibility = 2;
+  int32 expires_in = 3;
+}
+
+message CreatePasteResponse {
+  string short_code = 1;
+  string url = 2;
+}
+
+message GetPasteRequest {
+  string short_code = 1;
+}
+
+message GetPasteResponse {
+  string short_code = 1;
+  string content = 2;
+  string visibility = 3;
+  google.protobuf.Timestamp expires_at = 4;
+}

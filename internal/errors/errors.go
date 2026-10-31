@@ -7,4 +7,6 @@ var (
 	ErrInvalidInput      = errors.New("invalid input")
 	ErrForbidden         = errors.New("access denied")
 	ErrShortCodeConflict = errors.New("short code already exists")
+
+	ErrIdempotencyConflict = errors.New("idempotency key was used with different input")
 )

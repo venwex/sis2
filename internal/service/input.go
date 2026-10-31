@@ -1,7 +1,8 @@
 package service
 
 type CreatePasteInput struct {
-	Content    string
-	Visibility string
-	ExpiresIn  int
+	IdempotencyKey string
+	Content        string
+	Visibility     string
+	ExpiresIn      int
 }

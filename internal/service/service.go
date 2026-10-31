@@ -3,6 +3,9 @@ package service
 import (
 	"context"
 	"crypto/rand"
+	"crypto/sha256"
+	"encoding/hex"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"log"
@@ -54,6 +57,11 @@ func (s *service) CreatePaste(ctx context.Context, req *CreatePasteInput) (*m.Pa
 		return nil, fmt.Errorf("%w: request is required", e.ErrInvalidInput)
 	}
 
+	key, err := uuid.Parse(req.IdempotencyKey)
+	if err != nil || key == uuid.Nil {
+		return nil, fmt.Errorf("%w: Idempotency-Key must be a non-zero UUID", e.ErrInvalidInput)
+	}
+
 	if strings.TrimSpace(req.Content) == "" {
 		return nil, fmt.Errorf("%w: content is empty", e.ErrInvalidInput)
 	}
@@ -68,6 +76,11 @@ func (s *service) CreatePaste(ctx context.Context, req *CreatePasteInput) (*m.Pa
 
 	if req.ExpiresIn <= 0 || req.ExpiresIn > maxExpiresIn {
 		return nil, fmt.Errorf("%w: expires_in must be between 1 and %d seconds", e.ErrInvalidInput, maxExpiresIn)
+	}
+
+	requestHash, err := hashCreatePasteInput(req)
+	if err != nil {
+		return nil, err
 	}
 
 	now := time.Now().UTC()
@@ -92,7 +105,7 @@ func (s *service) CreatePaste(ctx context.Context, req *CreatePasteInput) (*m.Pa
 
 		paste.ShortCode = code
 
-		err = s.repo.CreatePaste(ctx, paste)
+		storedPaste, err := s.repo.CreatePaste(ctx, paste, key.String(), requestHash)
 		if errors.Is(err, e.ErrShortCodeConflict) {
 			continue
 		}
@@ -100,7 +113,7 @@ func (s *service) CreatePaste(ctx context.Context, req *CreatePasteInput) (*m.Pa
 			return nil, err
 		}
 
-		return paste, nil
+		return storedPaste, nil
 	}
 
 	return nil, fmt.Errorf("cannot allocate short code: %w", e.ErrShortCodeConflict)
@@ -165,6 +178,10 @@ func (s *service) GetPaste(ctx context.Context, shortCode string) (*m.Paste, err
 		}
 	}
 
+	if err := checkPaste(paste); err != nil {
+		return nil, err
+	}
+
 	if err := ctx.Err(); err != nil {
 		return nil, err
 	}
@@ -208,4 +225,24 @@ func validShortCode(code string) bool {
 	}
 
 	return true
+}
+
+func hashCreatePasteInput(req *CreatePasteInput) (string, error) {
+	payload := struct {
+		Content    string `json:"content"`
+		Visibility string `json:"visibility"`
+		ExpiresIn  int    `json:"expires_in"`
+	}{
+		Content:    req.Content,
+		Visibility: req.Visibility,
+		ExpiresIn:  req.ExpiresIn,
+	}
+
+	data, err := json.Marshal(payload)
+	if err != nil {
+		return "", fmt.Errorf("encode create input: %w", err)
+	}
+
+	hash := sha256.Sum256(data)
+	return hex.EncodeToString(hash[:]), nil
 }
