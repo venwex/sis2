@@ -1,0 +1,27 @@
+{
+  "protocol": "rest",
+  "operation": "get",
+  "rate": 2,
+  "duration": "5s",
+  "content_bytes": 1024,
+  "latency_ms": {
+    "p(95)": 11.5,
+    "p(99)": 11.9,
+    "max": 12,
+    "avg": 8,
+    "med": 8
+  },
+  "failures": {
+    "rate": 0,
+    "passes": 0,
+    "fails": 11
+  },
+  "successful": {
+    "count": 11,
+    "rate": 2.1973991285068712
+  },
+  "dropped": {
+    "count": 0,
+    "rate": 0
+  }
+}
